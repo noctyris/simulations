@@ -2,27 +2,28 @@ name: Build CI
 
 on:
   push:
-    branches: ['main']
+    branches: ["main"]
   pull_request:
-    branches: ['main']
+    branches: ["main"]
 
 jobs:
-  runs-on: ubuntu-latest
-
-  steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
-
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install libsdl2-dev
-
-    - name: Compile
-      run: make
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: launch
-        path: launch
+  build:
+	  runs-on: ubuntu-latest
+	
+	  steps:
+	    - name: Checkout repo
+	      uses: actions/checkout@v3
+	
+	    - name: Install dependencies
+	      run: |
+	        sudo apt-get update
+	        sudo apt-get install libsdl2-dev
+	
+	    - name: Compile
+	      run: make
+	
+	    - name: Upload artifact
+	      uses: actions/upload-artifact@v4
+	      with:
+	        name: launch
+	        path: launch
