@@ -24,5 +24,6 @@ typedef struct {
 fabric_t *create_fabric(int width, int height, float spacing);
 void setup_fabric_connections(fabric_t *fabric);
 void free_fabric(fabric_t *fabric);
+void update_fabric(fabric_t *fabric);
 
 #endif

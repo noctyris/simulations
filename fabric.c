@@ -37,15 +37,23 @@ void setup_fabric_connections(fabric_t *fabric) {
     for (int x = 0; x < fabric->width; x++) {
       mesh_t *mesh = &fabric->grid[y][x];
 
-      if (x > 0) mesh->nbrs[0] = &fabric->grid[y][x-1];
-      if (x < fabric->width-1) mesh->nbrs[1] = &fabric->grid[y][x+1];
-      if (y > 0) mesh->nbrs[2] = &fabric->grid[y-1][x];
-      if (y < fabric->height-1) mesh->nbrs[3] = &fabric->grid[y+1][x];
+      if (x > 0)
+        mesh->nbrs[0] = &fabric->grid[y][x - 1];
+      if (x < fabric->width - 1)
+        mesh->nbrs[1] = &fabric->grid[y][x + 1];
+      if (y > 0)
+        mesh->nbrs[2] = &fabric->grid[y - 1][x];
+      if (y < fabric->height - 1)
+        mesh->nbrs[3] = &fabric->grid[y + 1][x];
 
-      if (x > 0 && y > 0) mesh->nbrs[4] = &fabric->grid[y-1][x-1];
-      if (x < fabric->width-1 && y > 0) mesh->nbrs[5] = &fabric->grid[y-1][x+1];
-      if (x > 0 && y > fabric->height-1) mesh->nbrs[6] = &fabric->grid[y+1][x-1];
-      if (x < fabric->width-1 && y < fabric->height-1) mesh->nbrs[7] = &fabric->grid[y+1][x];
+      if (x > 0 && y > 0)
+        mesh->nbrs[4] = &fabric->grid[y - 1][x - 1];
+      if (x < fabric->width - 1 && y > 0)
+        mesh->nbrs[5] = &fabric->grid[y - 1][x + 1];
+      if (x > 0 && y > fabric->height - 1)
+        mesh->nbrs[6] = &fabric->grid[y + 1][x - 1];
+      if (x < fabric->width - 1 && y < fabric->height - 1)
+        mesh->nbrs[7] = &fabric->grid[y + 1][x];
     }
   }
 }
@@ -57,3 +65,5 @@ void free_fabric(fabric_t *fabric) {
   free(fabric->grid);
   free(fabric);
 }
+
+void update_fabric(fabric_t *fabric) {}

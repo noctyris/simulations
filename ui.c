@@ -38,8 +38,10 @@ void set_color(rgb_t color) {
 void fill_rect(pos_t pos, int width, int height, rgb_t color, int filled) {
   set_color(color);
   SDL_Rect rect = {pos.x, pos.y, width, height};
-  if (filled) SDL_RenderFillRect(renderer, &rect);
-  else SDL_RenderDrawRect(renderer, &rect);
+  if (filled)
+    SDL_RenderFillRect(renderer, &rect);
+  else
+    SDL_RenderDrawRect(renderer, &rect);
 }
 
 void draw_line(pos_t pos1, pos_t pos2, rgb_t color) {

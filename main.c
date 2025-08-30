@@ -17,12 +17,17 @@ int main() {
       for (int x = 0; x < fabric->width; x++) {
         mesh_t *mesh = &fabric->grid[y][x];
 
-        fill_rect((pos_t){mesh->pos.x-2, mesh->pos.y-2}, 5, 5, (rgb_t){255, mesh->fixed ? 0 : 255, mesh->fixed ? 0 : 255}, 1);
+        fill_rect((pos_t){mesh->pos.x - 2, mesh->pos.y - 2}, 5, 5,
+                  (rgb_t){255, mesh->fixed ? 0 : 255, mesh->fixed ? 0 : 255},
+                  1);
         for (int i = 0; i < 8; i++) {
-          if (mesh->nbrs[i] == NULL) continue;
+          if (mesh->nbrs[i] == NULL)
+            continue;
           mesh_t *nbr = mesh->nbrs[i];
 
-          draw_line(mesh->pos, nbr->pos, (rgb_t){i>3 ? 100 : 255, i>3 ? 100 : 255, i>3 ? 100 : 255});
+          draw_line(
+              mesh->pos, nbr->pos,
+              (rgb_t){i > 3 ? 100 : 255, i > 3 ? 100 : 255, i > 3 ? 100 : 255});
         }
       }
     }
