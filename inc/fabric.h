@@ -1,6 +1,7 @@
 #ifndef FABRIC_H
 #define FABRIC_H
 
+#include <stdio.h>
 #include <stdlib.h>
 
 typedef struct {
@@ -21,5 +22,6 @@ typedef struct {
 } fabric_t;
 
 fabric_t *create_fabric(int width, int height, float spacing);
+void free_fabric(fabric_t *fabric);
 
 #endif
