@@ -11,7 +11,7 @@ typedef struct {
 
 typedef struct mesh_t {
   pos_t pos, old_pos;
-  struct mesh_t *nbr[8];
+  struct mesh_t *nbrs[8];
   int fixed;
 } mesh_t;
 
@@ -22,6 +22,7 @@ typedef struct {
 } fabric_t;
 
 fabric_t *create_fabric(int width, int height, float spacing);
+void setup_fabric_connections(fabric_t *fabric);
 void free_fabric(fabric_t *fabric);
 
 #endif

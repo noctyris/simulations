@@ -31,10 +31,18 @@ int sdl_init(char *title) {
   return 0;
 }
 
-void fill_rect(pos_t pos, int width, int height, rgb_t color, int filled) {
+void set_color(rgb_t color) {
   SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+}
+
+void fill_rect(pos_t pos, int width, int height, rgb_t color, int filled) {
+  set_color(color);
   SDL_Rect rect = {pos.x, pos.y, width, height};
   if (filled) SDL_RenderFillRect(renderer, &rect);
   else SDL_RenderDrawRect(renderer, &rect);
 }
 
+void draw_line(pos_t pos1, pos_t pos2, rgb_t color) {
+  set_color(color);
+  SDL_RenderDrawLine(renderer, pos1.x, pos1.y, pos2.x, pos2.y);
+}
