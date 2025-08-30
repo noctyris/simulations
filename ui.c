@@ -30,3 +30,11 @@ int sdl_init(char *title) {
 
   return 0;
 }
+
+void fill_rect(pos_t pos, int width, int height, rgb_t color, int filled) {
+  SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+  SDL_Rect rect = {pos.x, pos.y, width, height};
+  if (filled) SDL_RenderFillRect(renderer, &rect);
+  else SDL_RenderDrawRect(renderer, &rect);
+}
+

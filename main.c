@@ -12,6 +12,15 @@ int main() {
       if (event.type == SDL_QUIT)
         running = 0;
     }
+
+    for (int y = 0; y < fabric->height; y++) {
+      for (int x = 0; x < fabric->width; x++) {
+        mesh_t *mesh = &fabric->grid[y][x];
+
+        fill_rect((pos_t){mesh->pos.x-1, mesh->pos.y-1}, 3, 3, (rgb_t){255, mesh->fixed ? 0 : 255, mesh->fixed ? 0 : 255}, 1);
+      }
+    }
+
     SDL_RenderPresent(renderer);
   }
 
