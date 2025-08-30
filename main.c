@@ -4,7 +4,7 @@
 int main() {
   sdl_init("Test");
 
-  fabric_t *fabric = create_fabric(20, 5, 30);
+  fabric_t *fabric = create_fabric(10, 5, 50);
   int running = 1;
 
   while (running) {
@@ -12,6 +12,9 @@ int main() {
       if (event.type == SDL_QUIT)
         running = 0;
     }
+
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+    SDL_RenderClear(renderer);
 
     for (int y = 0; y < fabric->height; y++) {
       for (int x = 0; x < fabric->width; x++) {
@@ -33,6 +36,9 @@ int main() {
     }
 
     SDL_RenderPresent(renderer);
+    SDL_Delay(16);
+
+    update_fabric(fabric, 1.0f);
   }
 
   free_fabric(fabric);

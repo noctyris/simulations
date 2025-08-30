@@ -1,6 +1,7 @@
 #ifndef FABRIC_H
 #define FABRIC_H
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,6 +25,8 @@ typedef struct {
 fabric_t *create_fabric(int width, int height, float spacing);
 void setup_fabric_connections(fabric_t *fabric);
 void free_fabric(fabric_t *fabric);
-void update_fabric(fabric_t *fabric);
+void update_fabric(fabric_t *fabric, float dt);
+void apply_constraints(fabric_t *fabric);
+void apply_spring_constraint(mesh_t *a, mesh_t *b, float rest_length);
 
 #endif
