@@ -4,17 +4,45 @@
 int main() {
   sdl_init("Test");
 
-  fabric_t *fabric = create_fabric(50, 10, 1.f);
+  fabric_t *fabric = create_fabric(15, 5, 50);
   int running = 1;
+
+  int is_click = 0;
+  pos_t click_pos[2];
+  click_pos[1].x = -1;
+  click_pos[1].y = -1;
 
   while (running) {
     while (SDL_PollEvent(&event)) {
-      if (event.type == SDL_QUIT)
-        running = 0;
+      switch (event.type) {
+        case SDL_QUIT:
+          running = 0;
+          break;
+        case SDL_MOUSEMOTION:
+          if (is_click) {
+            click_pos[1].x = event.motion.x;
+            click_pos[1].y = event.motion.y;
+          }
+          break;
+        case SDL_MOUSEBUTTONDOWN:
+          is_click = 1;
+          click_pos[1].x = -1;
+          click_pos[1].y = -1;
+          click_pos[0].x = event.motion.x;
+          click_pos[0].y = event.motion.y;
+          break;
+        case SDL_MOUSEBUTTONUP:
+          is_click = 0;
+          click_pos[1].x = event.motion.x;
+          click_pos[1].y = event.motion.y;
+          break;
+      }
     }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
+
+    if (click_pos[1].x != -1 && click_pos[1].y!=-1) draw_line(click_pos[0], click_pos[1], (rgb_t){255, 255, 255});
 
     for (int y = 0; y < fabric->height; y++) {
       for (int x = 0; x < fabric->width; x++) {
