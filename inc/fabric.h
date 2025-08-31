@@ -7,6 +7,8 @@
 
 #define OFFSET_X 100
 #define OFFSET_Y 100
+#define WIDTH 800
+#define HEIGHT 600
 
 typedef struct {
   int x;

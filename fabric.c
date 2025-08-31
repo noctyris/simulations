@@ -24,7 +24,8 @@ fabric_t *create_fabric(int width, int height, float spacing) {
       }
 
       int nfixed = 4;
-      mesh->fixed = (y == 0 && (x % ((width - 1) / (nfixed - 1)) == 0));
+      mesh->fixed =
+          (y == 0 && (x == 0 || x == 1 || x == width - 2 || x == width - 1));
     }
   }
 
@@ -83,6 +84,15 @@ void update_fabric(fabric_t *fabric, float dt) {
         // Verlet integration: pos = pos + dpos + acceleration * dt^2
         mesh->pos.x = mesh->pos.x + vel_x + 0.0f * dt * dt;
         mesh->pos.y = mesh->pos.y + vel_y + 9.8f * dt * dt;
+
+        if (mesh->pos.x < 0)
+          mesh->pos.x = 0;
+        if (mesh->pos.x > WIDTH)
+          mesh->pos.x = WIDTH;
+        if (mesh->pos.y < 0)
+          mesh->pos.y = 0;
+        if (mesh->pos.y > HEIGHT)
+          mesh->pos.y = HEIGHT;
 
         mesh->old_pos = temp;
       }
