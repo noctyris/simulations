@@ -81,7 +81,7 @@ void update_fabric(fabric_t *fabric, float dt) {
         float vel_y = (mesh->pos.y - mesh->old_pos.y) * damping;
 
         // Verlet integration: pos = pos + dpos + acceleration * dt^2
-        mesh->pos.x = mesh->pos.x + vel_x + 1.0f * dt * dt;
+        mesh->pos.x = mesh->pos.x + vel_x + 0.0f * dt * dt;
         mesh->pos.y = mesh->pos.y + vel_y + 9.8f * dt * dt;
 
         mesh->old_pos = temp;
@@ -177,8 +177,8 @@ void correct_drift(fabric_t *fabric) {
     for (int y = 0; y < fabric->height; y++) {
       for (int x = 0; x < fabric->width; x++) {
         if (!fabric->grid[y][x].fixed) {
-          fabric->grid[y][x].pos.x += drift * 0.01f; // Very small correction
-          fabric->grid[y][x].old_pos.x += drift * 0.01f;
+          fabric->grid[y][x].pos.x += drift * .35f; // Very small correction
+          fabric->grid[y][x].old_pos.x += drift * .35f;
         }
       }
     }
