@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define OFFSET_X 100
+#define OFFSET_Y 100
+
 typedef struct {
   int x;
   int y;
@@ -28,5 +31,6 @@ void free_fabric(fabric_t *fabric);
 void update_fabric(fabric_t *fabric, float dt);
 void apply_constraints(fabric_t *fabric);
 void apply_spring_constraint(mesh_t *a, mesh_t *b, float rest_length);
+void correct_drift(fabric_t *fabric);
 
 #endif

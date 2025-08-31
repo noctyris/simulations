@@ -4,7 +4,7 @@
 int main() {
   sdl_init("Test");
 
-  fabric_t *fabric = create_fabric(10, 5, 50);
+  fabric_t *fabric = create_fabric(20, 5, 20);
   int running = 1;
 
   while (running) {

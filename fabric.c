@@ -15,15 +15,16 @@ fabric_t *create_fabric(int width, int height, float spacing) {
     for (int x = 0; x < width; x++) {
       mesh_t *mesh = &fabric->grid[y][x];
 
-      mesh->pos.x = x * spacing + 100;
-      mesh->pos.y = y * spacing + 100;
+      mesh->pos.x = x * spacing + OFFSET_X;
+      mesh->pos.y = y * spacing + OFFSET_Y;
       mesh->old_pos = mesh->pos;
 
       for (int i = 0; i < 8; i++) {
         mesh->nbrs[i] = NULL;
       }
 
-      mesh->fixed = (y == 0 && (x == 0 || x == width - 1));
+      int nfixed = 4;
+      mesh->fixed = (y == 0 && (x % ((width - 1) / (nfixed - 1)) == 0));
     }
   }
 
@@ -80,7 +81,7 @@ void update_fabric(fabric_t *fabric, float dt) {
         float vel_y = (mesh->pos.y - mesh->old_pos.y) * damping;
 
         // Verlet integration: pos = pos + dpos + acceleration * dt^2
-        mesh->pos.x = mesh->pos.x + vel_x + 2.0f * dt * dt;
+        mesh->pos.x = mesh->pos.x + vel_x + 1.0f * dt * dt;
         mesh->pos.y = mesh->pos.y + vel_y + 9.8f * dt * dt;
 
         mesh->old_pos = temp;
@@ -89,6 +90,7 @@ void update_fabric(fabric_t *fabric, float dt) {
   }
 
   apply_constraints(fabric);
+  correct_drift(fabric);
 }
 
 void apply_constraints(fabric_t *fabric) {
@@ -110,7 +112,7 @@ void apply_constraints(fabric_t *fabric) {
     }
   } else {
     for (int y = 0; y < fabric->height; y++) {
-      for (int x = fabric->width-1; x > 0; x++) {
+      for (int x = fabric->width - 1; x > 0; x++) {
         mesh_t *mesh = &fabric->grid[y][x];
 
         // Only process RIGHT and DOWN neighbors to avoid double-processing
@@ -148,5 +150,37 @@ void apply_spring_constraint(mesh_t *a, mesh_t *b, float rest_length) {
   } else if (a->fixed && !b->fixed) {
     b->pos.x += corr_x * 2;
     b->pos.y += corr_y * 2;
+  }
+}
+
+void correct_drift(fabric_t *fabric) {
+  float center_x = 0;
+  int count = 0;
+
+  // Calculate current center of mass
+  for (int y = 0; y < fabric->height; y++) {
+    for (int x = 0; x < fabric->width; x++) {
+      if (!fabric->grid[y][x].fixed) {
+        center_x += fabric->grid[y][x].pos.x;
+        count++;
+      }
+    }
+  }
+
+  if (count > 0) {
+    center_x /= count;
+    float expected_center = fabric->width * fabric->spacing / 2.0f +
+                            OFFSET_X; // Based on your initial positioning
+    float drift = expected_center - center_x;
+
+    // Apply small correction
+    for (int y = 0; y < fabric->height; y++) {
+      for (int x = 0; x < fabric->width; x++) {
+        if (!fabric->grid[y][x].fixed) {
+          fabric->grid[y][x].pos.x += drift * 0.01f; // Very small correction
+          fabric->grid[y][x].old_pos.x += drift * 0.01f;
+        }
+      }
+    }
   }
 }
