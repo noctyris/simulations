@@ -75,12 +75,12 @@ void update_fabric(fabric_t *fabric, float dt) {
         pos_t temp = mesh->pos;
 
         // Add damping (0.99 = 1% damping per frame)
-        float damping = 0.9f;
+        float damping = 0.8f;
         float vel_x = (mesh->pos.x - mesh->old_pos.x) * damping;
         float vel_y = (mesh->pos.y - mesh->old_pos.y) * damping;
 
         // Verlet integration: pos = pos + dpos + acceleration * dt^2
-        mesh->pos.x = mesh->pos.x + vel_x + 0.0f * dt * dt;
+        mesh->pos.x = mesh->pos.x + vel_x + 2.0f * dt * dt;
         mesh->pos.y = mesh->pos.y + vel_y + 9.8f * dt * dt;
 
         mesh->old_pos = temp;
