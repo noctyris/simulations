@@ -1,3 +1,4 @@
+#include "actions.h"
 #include "fabric.h"
 #include "ui.h"
 
@@ -15,34 +16,33 @@ int main() {
   while (running) {
     while (SDL_PollEvent(&event)) {
       switch (event.type) {
-        case SDL_QUIT:
-          running = 0;
-          break;
-        case SDL_MOUSEMOTION:
-          if (is_click) {
-            click_pos[1].x = event.motion.x;
-            click_pos[1].y = event.motion.y;
-          }
-          break;
-        case SDL_MOUSEBUTTONDOWN:
-          is_click = 1;
-          click_pos[1].x = -1;
-          click_pos[1].y = -1;
-          click_pos[0].x = event.motion.x;
-          click_pos[0].y = event.motion.y;
-          break;
-        case SDL_MOUSEBUTTONUP:
-          is_click = 0;
+      case SDL_QUIT:
+        running = 0;
+        break;
+      case SDL_MOUSEMOTION:
+        if (is_click) {
           click_pos[1].x = event.motion.x;
           click_pos[1].y = event.motion.y;
-          break;
+        }
+        break;
+      case SDL_MOUSEBUTTONDOWN:
+        is_click = 1;
+        click_pos[0].x = event.motion.x;
+        click_pos[0].y = event.motion.y;
+        break;
+      case SDL_MOUSEBUTTONUP:
+        is_click = 0;
+        click_pos[1].x = -1;
+        click_pos[1].y = -1;
+        break;
       }
     }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
     SDL_RenderClear(renderer);
 
-    if (click_pos[1].x != -1 && click_pos[1].y!=-1) draw_line(click_pos[0], click_pos[1], (rgb_t){255, 255, 255});
+    if (click_pos[1].x != -1 && click_pos[1].y != -1)
+      draw_line(click_pos[0], click_pos[1], (rgb_t){0, 255, 255});
 
     for (int y = 0; y < fabric->height; y++) {
       for (int x = 0; x < fabric->width; x++) {
@@ -59,6 +59,15 @@ int main() {
           draw_line(
               mesh->pos, nbr->pos,
               (rgb_t){i > 3 ? 100 : 255, i > 3 ? 100 : 255, i > 3 ? 100 : 255});
+
+          // if (is_mouse_between(mesh->pos, nbr->pos, click_pos[1]))
+          // printf("(%d, %d) -> (%d, %d)\t(%d, %d)\n", mesh->pos.x,
+          // mesh->pos.y, nbr->pos.x, nbr->pos.y, click_pos[1].x,
+          // click_pos[1].y);
+
+          if (is_mouse_between(mesh->pos, nbr->pos, click_pos[1])) {
+            mesh->nbrs[i] = NULL;
+          }
         }
       }
     }
