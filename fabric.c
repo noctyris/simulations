@@ -89,8 +89,9 @@ void update_fabric(fabric_t *fabric, float dt) {
     }
   }
 
-  apply_constraints(fabric);
-  correct_drift(fabric);
+  for (int iter = 0; iter < 2; iter++) {
+    apply_constraints(fabric);
+  }
 }
 
 void apply_constraints(fabric_t *fabric) {
@@ -102,10 +103,10 @@ void apply_constraints(fabric_t *fabric) {
         mesh_t *mesh = &fabric->grid[y][x];
 
         // Only process RIGHT and DOWN neighbors to avoid double-processing
-        if (x < fabric->width - 1 && mesh->nbrs[1] != NULL) {
+        if (mesh->nbrs[1] != NULL) {
           apply_spring_constraint(mesh, mesh->nbrs[1], fabric->spacing);
         }
-        if (y < fabric->height - 1 && mesh->nbrs[3] != NULL) {
+        if (mesh->nbrs[3] != NULL) {
           apply_spring_constraint(mesh, mesh->nbrs[3], fabric->spacing);
         }
       }
@@ -150,37 +151,5 @@ void apply_spring_constraint(mesh_t *a, mesh_t *b, float rest_length) {
   } else if (a->fixed && !b->fixed) {
     b->pos.x += corr_x * 2;
     b->pos.y += corr_y * 2;
-  }
-}
-
-void correct_drift(fabric_t *fabric) {
-  float center_x = 0;
-  int count = 0;
-
-  // Calculate current center of mass
-  for (int y = 0; y < fabric->height; y++) {
-    for (int x = 0; x < fabric->width; x++) {
-      if (!fabric->grid[y][x].fixed) {
-        center_x += fabric->grid[y][x].pos.x;
-        count++;
-      }
-    }
-  }
-
-  if (count > 0) {
-    center_x /= count;
-    float expected_center = fabric->width * fabric->spacing / 2.0f +
-                            OFFSET_X; // Based on your initial positioning
-    float drift = expected_center - center_x;
-
-    // Apply small correction
-    for (int y = 0; y < fabric->height; y++) {
-      for (int x = 0; x < fabric->width; x++) {
-        if (!fabric->grid[y][x].fixed) {
-          fabric->grid[y][x].pos.x += drift * .35f; // Very small correction
-          fabric->grid[y][x].old_pos.x += drift * .35f;
-        }
-      }
-    }
   }
 }
