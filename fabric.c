@@ -120,36 +120,6 @@ void apply_constraints(fabric_t *fabric) {
       }
     }
   }
-
-  /*if (!reverse) {
-    for (int y = 0; y < fabric->height; y++) {
-      for (int x = 0; x < fabric->width; x++) {
-        mesh_t *mesh = &fabric->grid[y][x];
-
-        // Only process RIGHT and DOWN neighbors to avoid double-processing
-        if (mesh->nbrs[1] != NULL) {
-          apply_spring_constraint(mesh, mesh->nbrs[1], fabric->spacing);
-        }
-        if (mesh->nbrs[3] != NULL) {
-          apply_spring_constraint(mesh, mesh->nbrs[3], fabric->spacing);
-        }
-      }
-    }
-  } else {
-    for (int y = 0; y < fabric->height; y++) {
-      for (int x = fabric->width - 1; x >= 0; x--) {
-        mesh_t *mesh = &fabric->grid[y][x];
-
-        // Only process RIGHT and DOWN neighbors to avoid double-processing
-        if (x < fabric->width - 1 && mesh->nbrs[1] != NULL) {
-          apply_spring_constraint(mesh, mesh->nbrs[1], fabric->spacing);
-        }
-        if (y < fabric->height - 1 && mesh->nbrs[3] != NULL) {
-          apply_spring_constraint(mesh, mesh->nbrs[3], fabric->spacing);
-        }
-      }
-    }
-  }*/
   reverse = !reverse;
 }
 
