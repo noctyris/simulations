@@ -81,7 +81,7 @@ void update_fabric(fabric_t *fabric, float dt) {
         float vel_y = (mesh->pos.y - mesh->old_pos.y) * damping;
 
         // Verlet integration: pos = pos + dpos + acceleration * dt^2
-        mesh->pos.x = mesh->pos.x + vel_x + 3.5f * dt * dt;
+        mesh->pos.x = mesh->pos.x + vel_x + 0.0f * dt * dt;
         mesh->pos.y = mesh->pos.y + vel_y + 9.8f * dt * dt;
 
         if (mesh->pos.x < 0)
@@ -122,7 +122,7 @@ void apply_constraints(fabric_t *fabric) {
     }
   } else {
     for (int y = 0; y < fabric->height; y++) {
-      for (int x = fabric->width - 1; x > 0; x++) {
+      for (int x = fabric->width - 1; x >= 0; x--) {
         mesh_t *mesh = &fabric->grid[y][x];
 
         // Only process RIGHT and DOWN neighbors to avoid double-processing
@@ -135,6 +135,7 @@ void apply_constraints(fabric_t *fabric) {
       }
     }
   }
+  reverse = !reverse;
 }
 
 void apply_spring_constraint(mesh_t *a, mesh_t *b, float rest_length) {
