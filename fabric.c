@@ -63,6 +63,7 @@ void free_fabric(fabric_t *fabric) {
   for (int y = 0; y < fabric->height; y++) {
     free(fabric->grid[y]);
   }
+  printf("OK\n");
   free(fabric->grid);
   free(fabric);
 }
@@ -98,34 +99,37 @@ void update_fabric(fabric_t *fabric, float dt) {
     }
   }
 
+
   for (int iter = 0; iter < 2; iter++) {
-    apply_constraints(fabric);
+    fabric_t *f_fabric = fabric;
+    apply_constraints(fabric, f_fabric);
   }
 }
 
-void apply_constraints(fabric_t *fabric) {
+void apply_constraints(fabric_t *fabric, fabric_t *f_fabric) {
   static int reverse = 0;
 
   for (int y = 0; y < fabric->height; y++) {
     for (int x = reverse ? fabric->width - 1 : 0;
          reverse ? x >= 0 : x < fabric->width; x += (reverse ? -1 : 1)) {
       mesh_t *mesh = &fabric->grid[y][x];
+      mesh_t *f_mesh = &f_fabric->grid[y][x];
 
       // Only process RIGHT and DOWN neighbors to avoid double-processing
       if (mesh->nbrs[1] != NULL) {
-        apply_spring_constraint(mesh, mesh->nbrs[1], fabric->spacing);
+        apply_spring_constraint(mesh, mesh->nbrs[1], f_mesh, f_mesh->nbrs[1], fabric->spacing);
       }
       if (mesh->nbrs[3] != NULL) {
-        apply_spring_constraint(mesh, mesh->nbrs[3], fabric->spacing);
+        apply_spring_constraint(mesh, mesh->nbrs[3], f_mesh, f_mesh->nbrs[3], fabric->spacing);
       }
     }
   }
   reverse = !reverse;
 }
 
-void apply_spring_constraint(mesh_t *a, mesh_t *b, float rest_length) {
-  float dx = b->pos.x - a->pos.x;
-  float dy = b->pos.y - a->pos.y;
+void apply_spring_constraint(mesh_t *a, mesh_t *b, mesh_t *f_a, mesh_t *f_b, float rest_length) {
+  float dx = f_b->pos.x - f_a->pos.x;
+  float dy = f_b->pos.y - f_a->pos.y;
   float dist = sqrt(dx * dx + dy * dy);
 
   if (dist < 0.001f)
