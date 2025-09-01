@@ -31,7 +31,7 @@ fabric_t *create_fabric(int width, int height, float spacing);
 void setup_fabric_connections(fabric_t *fabric);
 void free_fabric(fabric_t *fabric);
 void update_fabric(fabric_t *fabric, float dt);
-void apply_constraints(fabric_t *fabric, fabric_t *f_fabric);
-void apply_spring_constraint(mesh_t *a, mesh_t *b, mesh_t *f_a, mesh_t *f_b, float rest_length);
+void apply_constraints(const fabric_t original, fabric_t *modified);
+void apply_spring_constraint(mesh_t *a, const mesh_t nbr, float rest_length);
 
 #endif

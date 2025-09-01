@@ -63,7 +63,6 @@ void free_fabric(fabric_t *fabric) {
   for (int y = 0; y < fabric->height; y++) {
     free(fabric->grid[y]);
   }
-  printf("OK\n");
   free(fabric->grid);
   free(fabric);
 }
@@ -99,37 +98,43 @@ void update_fabric(fabric_t *fabric, float dt) {
     }
   }
 
-
   for (int iter = 0; iter < 2; iter++) {
-    fabric_t *f_fabric = fabric;
-    apply_constraints(fabric, f_fabric);
+    const fabric_t original = {fabric->grid, fabric->width, fabric->height,
+                               fabric->spacing};
+    apply_constraints(original, fabric);
   }
 }
 
-void apply_constraints(fabric_t *fabric, fabric_t *f_fabric) {
+void apply_constraints(const fabric_t original, fabric_t *modified) {
   static int reverse = 0;
 
-  for (int y = 0; y < fabric->height; y++) {
-    for (int x = reverse ? fabric->width - 1 : 0;
-         reverse ? x >= 0 : x < fabric->width; x += (reverse ? -1 : 1)) {
-      mesh_t *mesh = &fabric->grid[y][x];
-      mesh_t *f_mesh = &f_fabric->grid[y][x];
+  for (int y = reverse ? original.height - 1 : 0;
+       reverse ? y >= 0 : y < original.height; y += (reverse ? -1 : 1)) {
+    for (int x = reverse ? original.width - 1 : 0;
+         reverse ? x >= 0 : x < original.width; x += (reverse ? -1 : 1)) {
+      mesh_t *mesh = &modified->grid[y][x];
+      const mesh_t or_mesh = original.grid[y][x];
 
-      // Only process RIGHT and DOWN neighbors to avoid double-processing
-      if (mesh->nbrs[1] != NULL) {
-        apply_spring_constraint(mesh, mesh->nbrs[1], f_mesh, f_mesh->nbrs[1], fabric->spacing);
-      }
-      if (mesh->nbrs[3] != NULL) {
-        apply_spring_constraint(mesh, mesh->nbrs[3], f_mesh, f_mesh->nbrs[3], fabric->spacing);
+      /*for (int i = 0; i < 4; i++) { // ¤
+        if (mesh->nbrs[i] != NULL) apply_spring_constraint(mesh,
+      *or_mesh.nbrs[i], original.spacing);;
+      }*/
+      for (int i = 0; i < 8; i++) { // Apply to all 8 neighbors
+        if (mesh->nbrs[i] != NULL) {
+          float length =
+              (i < 4) ? original.spacing : original.spacing * sqrt(2);
+          apply_spring_constraint(mesh, *or_mesh.nbrs[i], length);
+        }
       }
     }
   }
   reverse = !reverse;
 }
 
-void apply_spring_constraint(mesh_t *a, mesh_t *b, mesh_t *f_a, mesh_t *f_b, float rest_length) {
-  float dx = f_b->pos.x - f_a->pos.x;
-  float dy = f_b->pos.y - f_a->pos.y;
+void apply_spring_constraint(mesh_t *mesh, const mesh_t nbr,
+                             float rest_length) {
+  float dx = nbr.pos.x - mesh->pos.x;
+  float dy = nbr.pos.y - mesh->pos.y;
   float dist = sqrt(dx * dx + dy * dy);
 
   if (dist < 0.001f)
@@ -139,16 +144,9 @@ void apply_spring_constraint(mesh_t *a, mesh_t *b, mesh_t *f_a, mesh_t *f_b, flo
   float corr_x = difference * dx * 0.5f; // Split the difference
   float corr_y = difference * dy * 0.5f; // in both meshes
 
-  if (!a->fixed && !b->fixed) {
-    a->pos.x -= corr_x;
-    a->pos.y -= corr_y;
-    b->pos.x += corr_x;
-    b->pos.y += corr_y;
-  } else if (!a->fixed && b->fixed) {
-    a->pos.x -= corr_x;
-    a->pos.y -= corr_y;
-  } else if (a->fixed && !b->fixed) {
-    b->pos.x += corr_x;
-    b->pos.y += corr_y;
+  if (!mesh->fixed) {
+    mesh->pos.x -= corr_x; // Process only in 1st node because every neighbor is
+                           // processed (¤)
+    mesh->pos.y -= corr_y;
   }
 }

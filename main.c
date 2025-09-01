@@ -5,7 +5,7 @@
 int main() {
   sdl_init("Test");
 
-  fabric_t *fabric = create_fabric(15, 5, 50);
+  fabric_t *fabric = create_fabric(15, 5, 30);
   int running = 1;
 
   int is_click = 0;
