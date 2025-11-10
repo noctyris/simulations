@@ -87,5 +87,9 @@ void update_fabric(fabric_t *fabric, float dt) {
 }
 
 void apply_contraints(const fabric_t original, fabric_t *fabric) {
-  
+  for (int y = 0; y < height; y++) {
+    for (int x = 0; x < width; x++) {
+      mesh_t *mesh = &fabric->grid[y][x];
+    }
+  }
 }
