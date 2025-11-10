@@ -20,6 +20,9 @@ $(BUILDDIR)/%.o: %.c | $(BUILDDIR)
 $(EXEC): $(OBJS) | 
 	$(CC) -o $@ $(OBJS) $(CFLAGS)
 
+run: $(EXEC) |
+	./$(EXEC)
+
 clean:
 	rm -rf $(BUILDDIR) $(EXEC)
 
