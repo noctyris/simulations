@@ -55,3 +55,37 @@ void setup_fabric_connections(fabric_t *fabric) {
     }
   }
 }
+
+void update_fabric(fabric_t *fabric, float dt) {
+  for (int y = 0; y < fabric->height; y++) {
+    for (int x = 0; x < fabric->width; x++) {
+      mesh_t *mesh = &fabric->grid[y][x];
+      if (mesh->fixed) continue;
+
+      pos_t temp = mesh->pos;
+      float damping = 0.9f;
+      float vel_x = (mesh->pos.x - mesh->old_pos.x) * damping;
+      float vel_y = (mesh->pos.y - mesh->old_pos.y) * damping;
+
+      // Verlet integration
+      mesh->pos.x = mesh->pos.x + vel_x + 0.0f * dt * dt;
+      mesh->pos.y = mesh->pos.y + vel_y + 9.8f * dt * dt;
+
+      if (mesh->pos.x < 0) mesh->pos.x = 0;
+      if (mesh->pos.x > WIDTH) mesh->pos.x = WIDTH;
+      if (mesh->pos.y < 0) mesh->pos.y = 0;
+      if (mesh->pos.y > HEIGHT) mesh->pos.y = HEIGHT;
+
+      mesh->old_pos = temp;
+    }
+  }
+
+  for (int iter = 0; iter < 2; iter++) {
+    const fabric_t original = {fabric->grid, fabric->width, fabric->height, fabric->spacing};
+    apply_constraints(original, fabric);
+  }
+}
+
+void apply_contraints(const fabric_t original, fabric_t *fabric) {
+  
+}

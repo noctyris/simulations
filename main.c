@@ -5,7 +5,6 @@
 int main() {
   sdl_init("Fabric simulation");
   fabric_t *fabric = create_fabric(10, 3, 40);
-  const float dt = 1.f/60.f;
   int running = 1;
   
   while (running) {
@@ -30,7 +29,8 @@ int main() {
     }
     
     SDL_RenderPresent(renderer);
-    SDL_Delay((int){dt*100});
+    SDL_Delay(160);
+    update_fabric(fabric, 1.0f);
   }
 
   free_fabric(fabric);

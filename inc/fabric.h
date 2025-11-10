@@ -27,5 +27,7 @@ typedef struct {
 fabric_t *create_fabric(int width, int height, float spacing);
 void free_fabric(fabric_t *fabric);
 void setup_fabric_connections(fabric_t *fabric);
+void update_fabric(fabric_t *fabric, float dt);
+void apply_contraints(const fabric_t original, fabric_t *fabric);
 
 #endif
