@@ -4,7 +4,7 @@
 
 int main() {
   sdl_init("Fabric simulation");
-  fabric_t *fabric = create_fabric(10, 3, 40);
+  fabric_t *fabric = create_fabric(10, 5, 40);
   int running = 1;
   
   while (running) {
@@ -29,7 +29,7 @@ int main() {
     }
     
     SDL_RenderPresent(renderer);
-    SDL_Delay(16 * 15);
+    SDL_Delay(16 );
     update_fabric(fabric, 1.0f);
   }
 
