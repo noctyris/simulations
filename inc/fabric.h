@@ -7,6 +7,7 @@
 #define HEIGHT 600
 
 #include <stdlib.h>
+#include <math.h>
 
 typedef struct {
   int x, y;
@@ -28,6 +29,7 @@ fabric_t *create_fabric(int width, int height, float spacing);
 void free_fabric(fabric_t *fabric);
 void setup_fabric_connections(fabric_t *fabric);
 void update_fabric(fabric_t *fabric, float dt);
-void apply_contraints(const fabric_t original, fabric_t *fabric);
+void apply_constraints(const fabric_t original, fabric_t *fabric);
+void apply_spring_constraint(mesh_t *mesh, const mesh_t or_mesh, const mesh_t nbr, float rest_length);
 
 #endif

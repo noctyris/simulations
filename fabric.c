@@ -23,7 +23,7 @@ fabric_t *create_fabric(int width, int height, float spacing) {
         mesh->nbrs[i] = NULL;
       }
 
-      mesh->fixed = (y == 0 && (x == 0 || x == 1 || x == width - 2 || x == width - 1));
+      mesh->fixed = (y == 0 && (/*x == 0 || x == 1 || */x == width - 2 || x == width - 1));
     }
   }
 
@@ -63,7 +63,7 @@ void update_fabric(fabric_t *fabric, float dt) {
       if (mesh->fixed) continue;
 
       pos_t temp = mesh->pos;
-      float damping = 0.9f;
+      float damping = 0.8f;
       float vel_x = (mesh->pos.x - mesh->old_pos.x) * damping;
       float vel_y = (mesh->pos.y - mesh->old_pos.y) * damping;
 
@@ -86,10 +86,32 @@ void update_fabric(fabric_t *fabric, float dt) {
   }
 }
 
-void apply_contraints(const fabric_t original, fabric_t *fabric) {
-  for (int y = 0; y < height; y++) {
-    for (int x = 0; x < width; x++) {
+void apply_constraints(const fabric_t original, fabric_t *fabric) {
+  for (int y = 0; y < fabric->height; y++) {
+    for (int x = 0; x < fabric->width; x++) {
       mesh_t *mesh = &fabric->grid[y][x];
+      const mesh_t or_mesh = original.grid[y][x];
+
+      for (int i = 0; i < 4; i++) {
+        if (mesh->nbrs[i] == NULL) continue;
+        float length = fabric->spacing * ((i < 4) ? 1 : sqrt(2));
+        apply_spring_constraint(mesh, or_mesh, *or_mesh.nbrs[i], length);
+      }
     }
   }
+}
+
+void apply_spring_constraint(mesh_t *mesh, const mesh_t or_mesh, const mesh_t nbr, float rest_length) {
+  float dx = nbr.pos.x - or_mesh.pos.x;
+  float dy = nbr.pos.y - or_mesh.pos.y;
+  float dist = sqrt(dx * dx + dy * dy);
+
+  if (dist < 0.001f || mesh->fixed) return; // Prevent division by 0 and moving fixed meshes
+
+  float difference = (rest_length - dist) / dist;
+  float corr_x = difference * dx * 0.5f;
+  float corr_y = difference * dy * 0.5f;
+
+  mesh->pos.x += corr_x;
+  mesh->pos.y -= corr_y;
 }

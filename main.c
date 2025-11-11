@@ -29,7 +29,7 @@ int main() {
     }
     
     SDL_RenderPresent(renderer);
-    SDL_Delay(160);
+    SDL_Delay(16 * 15);
     update_fabric(fabric, 1.0f);
   }
 
